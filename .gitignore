@@ -1,0 +1,11 @@
+node_modules
+dist
+*.tgz
+test-results
+
+vanilla-atom/*
+vue/*
+solid/*
+angular/*
+preact/*
+testing/*
