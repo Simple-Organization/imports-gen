@@ -26,3 +26,4 @@ Também não precisa configurar `tests runners` como o `playwright` que não vai
 
 1. Fazer um `cli` quando eu não estiver com preguiça
 2. Renomear para um nome que não tenha `glhera-`, talvez outro stack, sei lá seguindo o padrão do [`TanStack`](https://tanstack.com/)
+3. Atualizar a documentação para inglês quando eu não estiver com preguiça

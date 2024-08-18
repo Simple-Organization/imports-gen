@@ -17,6 +17,7 @@
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.46.1",
+    "@types/node": "^22.4.0",
     "esbuild": "^0.23.1",
     "prettier": "^3.3.3",
     "rollup": "^4.21.0",
@@ -29,5 +30,8 @@
   ],
   "types": "dist/index.d.ts",
   "type": "module",
-  "packageManager": "pnpm@9.6.0"
+  "packageManager": "pnpm@9.6.0",
+  "dependencies": {
+    "chokidar": "~3.6.0"
+  }
 }
