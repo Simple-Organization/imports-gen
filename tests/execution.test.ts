@@ -47,6 +47,50 @@ import '../some-ts-files/c';
 
     expect(contents).toBe(fileContents);
   });
+
+  //
+  //
+
+  test('processCssFile', async () => {
+    glheraImportStart({
+      glob: './tests/some-css-files/**/*.css',
+      outFile: 'tests/results/out.css',
+    });
+
+    // wait 200ms for the process to finish
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    const fileContents = `@import '../some-css-files/a.css';
+@import '../some-css-files/b.css';
+@import '../some-css-files/c.css';
+`;
+
+    const contents = fs.readFileSync('tests/results/out.css', 'utf-8');
+
+    expect(contents).toBe(fileContents);
+  });
+
+  //
+  //
+
+  test('processTsxFile', async () => {
+    glheraImportStart({
+      glob: './tests/some-tsx-files/**/*.(ts|tsx)',
+      outFile: 'tests/results/out-tsx.ts',
+    });
+
+    // wait 200ms for the process to finish
+    await new Promise((resolve) => setTimeout(resolve, 150));
+
+    const fileContents = `import '../some-tsx-files/a';
+import '../some-tsx-files/b';
+import '../some-tsx-files/c';
+`;
+
+    const contents = fs.readFileSync('tests/results/out-tsx.ts', 'utf-8');
+
+    expect(contents).toBe(fileContents);
+  });
 });
 
 // './tests/some-ts-files/a.ts'

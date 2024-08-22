@@ -45,9 +45,9 @@ export function glheraImportStart(options: GLHeraImportOptions): FSWatcher {
   // Configure the process function
 
   if (!process) {
-    if (/\.(tsx?|jsx?)$/.test(options.glob)) {
+    if (/\.(tsx?|jsx?)$/.test(outFile)) {
       process = processTsFile;
-    } else if (/\.(scss|css)$/.test(options.glob)) {
+    } else if (/\.(scss|css)$/.test(outFile)) {
       process = processScssFile;
     }
   }
@@ -142,7 +142,7 @@ export function getRelativePath(file: string, outFile: string) {
 export function processTsFile(file: string, output: string) {
   const result = getRelativePath(file, output);
 
-  return `import '${result.replace(/\.ts$/, '')}';\n`;
+  return `import '${result.replace(/\.tsx?$/, '')}';\n`;
 }
 
 //
