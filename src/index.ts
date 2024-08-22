@@ -34,7 +34,7 @@ export function processOutput(
 //
 //
 
-export function glheraImportStart(options: GLHeraImportOptions): FSWatcher {
+export function importsGen(options: GLHeraImportOptions): FSWatcher {
   let process = options.process!;
   let outFile = options.outFile!;
   let lastFileOutput = '';

@@ -1,14 +1,14 @@
 import { expect, test } from '@playwright/test';
-import { glheraImportStart } from '../src';
+import { importsGen } from '../src';
 import { describe } from 'node:test';
 import fs from 'node:fs';
 
 //
 //
 
-describe('glheraImportStart execution', () => {
+describe('importsGen execution', () => {
   test('processTsFile', async () => {
-    glheraImportStart({
+    importsGen({
       glob: './tests/some-ts-files/**/*.ts',
       outFile: 'tests/results/out.ts',
     });
@@ -30,7 +30,7 @@ import '../some-ts-files/c';
   //
 
   test('processScssFile', async () => {
-    glheraImportStart({
+    importsGen({
       glob: './tests/some-scss-files/**/*.scss',
       outFile: 'tests/results/out.scss',
     });
@@ -52,7 +52,7 @@ import '../some-ts-files/c';
   //
 
   test('processCssFile', async () => {
-    glheraImportStart({
+    importsGen({
       glob: './tests/some-css-files/**/*.css',
       outFile: 'tests/results/out.css',
     });
@@ -74,7 +74,7 @@ import '../some-ts-files/c';
   //
 
   test('processTsxFile', async () => {
-    glheraImportStart({
+    importsGen({
       glob: './tests/some-tsx-files/**/*.(ts|tsx)',
       outFile: 'tests/results/out-tsx.ts',
     });
