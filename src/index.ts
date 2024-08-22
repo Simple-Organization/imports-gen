@@ -10,7 +10,7 @@ export type ProcessFunction = (file: string, outFile: string) => string;
 //
 //
 
-export interface GLHeraImportOptions {
+export interface ImportsGenOptions {
   //
   glob: string;
   outFile: string;
@@ -34,7 +34,7 @@ export function processOutput(
 //
 //
 
-export function importsGen(options: GLHeraImportOptions): FSWatcher {
+export function importsGen(options: ImportsGenOptions): FSWatcher {
   let process = options.process!;
   let outFile = options.outFile!;
   let lastFileOutput = '';
