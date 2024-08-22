@@ -5,12 +5,17 @@ import path from 'node:path';
 //
 //
 
+export type ProcessFunction = (file: string, outFile: string) => string;
+
+//
+//
+
 export interface GLHeraImportOptions {
   //
   glob: string;
   outFile: string;
 
-  process?: (file: string) => void;
+  process?: ProcessFunction;
 
   chokidar?: WatchOptions;
 }
@@ -18,8 +23,20 @@ export interface GLHeraImportOptions {
 //
 //
 
+export function processOutput(
+  files: string[],
+  process: ProcessFunction,
+  outFile: string,
+) {
+  return files.map((file) => process(file, outFile)).join('');
+}
+
+//
+//
+
 export function glheraImportStart(options: GLHeraImportOptions): FSWatcher {
-  let process = options.process;
+  let process = options.process!;
+  let outFile = options.outFile!;
   let lastFileOutput = '';
   let files: string[] = [];
   let timeout: any;
@@ -39,11 +56,15 @@ export function glheraImportStart(options: GLHeraImportOptions): FSWatcher {
     throw new Error('No process function detected');
   }
 
+  if (!outFile) {
+    throw new Error('No outFile detected');
+  }
+
   //
   //
 
   function writeOutput() {
-    const output = files.map(process!).join();
+    const output = processOutput(files, process, outFile);
 
     if (output === lastFileOutput) {
       return;
@@ -51,7 +72,7 @@ export function glheraImportStart(options: GLHeraImportOptions): FSWatcher {
 
     lastFileOutput = output;
 
-    fs.writeFile(options.outFile, output, (err) => {
+    fs.writeFile(outFile, output, (err) => {
       if (err) {
         console.error(err);
       }
@@ -96,13 +117,39 @@ export function glheraImportStart(options: GLHeraImportOptions): FSWatcher {
 //
 //
 
-function processTsFile(file: string) {
-  return `import '${file}';\n`;
+export function getRelativePath(file: string, outFile: string) {
+  const dirFile = path.dirname(file);
+  const dirOutFile = path.dirname(outFile);
+
+  const filename = path.basename(file);
+
+  const relative = path.relative(dirOutFile, dirFile);
+
+  if (relative === '') {
+    return './' + filename;
+  }
+
+  if (relative.startsWith('..')) {
+    return relative + '/' + filename;
+  }
+
+  throw new Error('Invalid relative path');
 }
 
 //
 //
 
-function processScssFile(file: string) {
-  return `@import '${file}';\n`;
+export function processTsFile(file: string, output: string) {
+  const result = getRelativePath(file, output);
+
+  return `import '${result.replace(/\.ts$/, '')}';\n`;
+}
+
+//
+//
+
+export function processScssFile(file: string, output: string) {
+  const result = getRelativePath(file, output);
+
+  return `@import '${result}';\n`;
 }

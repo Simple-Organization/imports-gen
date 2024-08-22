@@ -1,5 +1,5 @@
 {
-  "name": "glhera-imports",
+  "name": "imports-gen",
   "version": "1.0.0-next.0",
   "author": "Simple Organization",
   "scripts": {
@@ -11,9 +11,9 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Simple-Organization/glhera-imports.git"
+    "url": "https://github.com/Simple-Organization/imports-gen.git"
   },
-  "bugs": "https://github.com/Simple-Organization/glhera-imports/issues",
+  "bugs": "https://github.com/Simple-Organization/imports-gen/issues",
   "license": "MIT",
   "devDependencies": {
     "@playwright/test": "^1.46.1",

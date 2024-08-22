@@ -14,7 +14,7 @@ export default defineConfig({
   timeout: 30000,
   retries: 0,
   reporter: 'list',
-  outputDir: 'tests/test-results',
+  outputDir: 'tests/results/test-results',
 
   projects: [
     {
