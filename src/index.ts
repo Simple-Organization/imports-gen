@@ -5,6 +5,16 @@ import path from 'node:path';
 //
 //
 
+/**
+ * Number only used for tests
+ *
+ * representing the number of writes outputed
+ */
+export let writes = 0;
+
+//
+//
+
 export type ProcessFunction = (file: string, outFile: string) => string;
 
 //
@@ -67,7 +77,7 @@ export async function importsGen(
 
   let resolve: ((value: boolean) => void) | null;
   let reject: ((reason?: any) => void) | null;
-  
+
   //
 
   let promise: Promise<boolean> | null = new Promise((res, rej) => {
@@ -92,6 +102,8 @@ export async function importsGen(
         console.error(err);
       }
     });
+
+    writes++;
   }
 
   //
