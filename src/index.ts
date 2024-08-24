@@ -1,5 +1,5 @@
 import { watch, type FSWatcher, type WatchOptions } from 'chokidar';
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path from 'node:path';
 
 //
@@ -52,6 +52,7 @@ export async function importsGen(
   let lastFileOutput = '';
   let files: string[] = [];
   let ready = false;
+  let timeout: any;
 
   //
   // Configure the process function
@@ -91,19 +92,24 @@ export async function importsGen(
   function writeOutput() {
     const output = processOutput(files, process, outFile);
 
+
     if (output === lastFileOutput) {
       return;
     }
 
     lastFileOutput = output;
 
-    fs.writeFile(outFile, output, (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
+    fs.writeFile(outFile, output);
 
     writes++;
+  }
+
+  //
+  //
+
+  function processFiles() {
+    clearTimeout(timeout);
+    timeout = setTimeout(writeOutput, 10);
   }
 
   //
@@ -115,7 +121,7 @@ export async function importsGen(
     files.push(path);
 
     if (ready) {
-      writeOutput();
+      processFiles();
     }
   });
 
@@ -123,7 +129,7 @@ export async function importsGen(
     files = files.filter((file) => file !== path);
 
     if (ready) {
-      writeOutput();
+      processFiles();
     }
   });
 
