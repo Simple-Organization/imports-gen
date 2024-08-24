@@ -34,12 +34,14 @@ export function processOutput(
 //
 //
 
-export function importsGen(options: ImportsGenOptions): FSWatcher {
+export async function importsGen(
+  options: ImportsGenOptions,
+): Promise<FSWatcher> {
   let process = options.process!;
   let outFile = options.outFile!;
   let lastFileOutput = '';
   let files: string[] = [];
-  let timeout: any;
+  let ready = false;
 
   //
   // Configure the process function
@@ -63,6 +65,19 @@ export function importsGen(options: ImportsGenOptions): FSWatcher {
   //
   //
 
+  let resolve: ((value: boolean) => void) | null;
+  let reject: ((reason?: any) => void) | null;
+  
+  //
+
+  let promise: Promise<boolean> | null = new Promise((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  //
+  //
+
   function writeOutput() {
     const output = processOutput(files, process, outFile);
 
@@ -80,33 +95,52 @@ export function importsGen(options: ImportsGenOptions): FSWatcher {
   }
 
   //
-  //
-
-  function processFiles() {
-    clearTimeout(timeout);
-    timeout = setTimeout(writeOutput, 100);
-  }
-
-  //
   // Watch the files
 
   const watcher = watch(options.glob, options.chokidar);
 
   watcher.on('add', (path) => {
     files.push(path);
-    processFiles();
-  });
 
-  watcher.on('change', (path) => {
-    files = files.filter((file) => file !== path);
-    files.push(path);
-    processFiles();
+    if (ready) {
+      writeOutput();
+    }
   });
 
   watcher.on('unlink', (path) => {
     files = files.filter((file) => file !== path);
-    processFiles();
+
+    if (ready) {
+      writeOutput();
+    }
   });
+
+  watcher.once('ready', () => {
+    ready = true;
+
+    writeOutput();
+
+    resolve!(true);
+
+    resolve = null;
+    reject = null;
+    promise = null;
+  });
+
+  watcher.once('error', (error) => {
+    if (reject) {
+      reject(error);
+
+      resolve = null;
+      reject = null;
+      promise = null;
+    }
+  });
+
+  //
+  //
+
+  await promise;
 
   //
   //
