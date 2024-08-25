@@ -21,13 +21,30 @@ export type ProcessFunction = (file: string, outFile: string) => string;
 //
 
 export interface ImportsGenOptions {
-  //
+  /**
+   * Glob to process
+   */
   glob: string;
+
+  /**
+   * Output file
+   */
   outFile: string;
 
+  /**
+   * Process function to generate the output
+   */
   process?: ProcessFunction;
 
+  /**
+   * Options for chokidar
+   */
   chokidar?: WatchOptions;
+
+  /**
+   * Whether to watch the files or not
+   */
+  watch?: boolean;
 }
 
 //
@@ -44,9 +61,13 @@ export function processOutput(
 //
 //
 
+/**
+ * Generate imports for a list of files
+ * @returns Returns a watcher if watch is true, otherwise returns null
+ */
 export async function importsGen(
   options: ImportsGenOptions,
-): Promise<FSWatcher> {
+): Promise<FSWatcher | null> {
   let process = options.process!;
   let outFile = options.outFile!;
   let lastFileOutput = '';
@@ -92,7 +113,6 @@ export async function importsGen(
   function writeOutput() {
     const output = processOutput(files, process, outFile);
 
-
     if (output === lastFileOutput) {
       return;
     }
@@ -115,7 +135,7 @@ export async function importsGen(
   //
   // Watch the files
 
-  const watcher = watch(options.glob, options.chokidar);
+  let watcher = watch(options.glob, options.chokidar);
 
   watcher.on('add', (path) => {
     files.push(path);
@@ -159,6 +179,15 @@ export async function importsGen(
   //
 
   await promise;
+
+  //
+  //
+
+  if (!options.watch) {
+    watcher.close();
+    watcher = null as any;
+    return null;
+  }
 
   //
   //
