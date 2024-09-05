@@ -111,7 +111,11 @@ export async function importsGen(
   //
 
   function writeOutput() {
-    const output = processOutput(files, process, outFile);
+    let output = processOutput(files, process, outFile);
+
+    //
+    // Corrigimos o problema do windows de gerar barras \ ao invés de /
+    output = output.replace(/\\/g, '/');
 
     if (output === lastFileOutput) {
       return;

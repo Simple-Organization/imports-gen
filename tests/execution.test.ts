@@ -11,6 +11,8 @@ async function deleteIfExists(file: string) {
   if (existsSync(file)) {
     await fs.unlink(file);
   }
+
+  // await new Promise((resolve) => setTimeout(resolve, 250));
 }
 
 //
@@ -133,6 +135,7 @@ import '../some-tsx-files/c';
     await importsGen({
       glob: './tests/files-to-change/**/*.(ts|tsx)',
       outFile: 'tests/results/files-changed-out.ts',
+      watch: true,
     });
 
     expect(writes).toBe(_writes + 1);
@@ -222,6 +225,7 @@ import '../files-to-change/b';
     await importsGen({
       glob: './tests/files-to-change-multiple/**/*.(ts|tsx)',
       outFile: 'tests/results/files-to-change-multiple-out.ts',
+      watch: true,
     });
 
     await new Promise((resolve) => setTimeout(resolve, 100));
