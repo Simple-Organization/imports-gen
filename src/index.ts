@@ -55,7 +55,10 @@ export function processOutput(
   process: ProcessFunction,
   outFile: string,
 ) {
-  return files.map((file) => process(file, outFile)).join('');
+  return files
+    .map((file) => process(file, outFile))
+    .sort((a, b) => a.localeCompare(b))
+    .join('');
 }
 
 //
